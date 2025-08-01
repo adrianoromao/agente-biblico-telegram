@@ -7,7 +7,7 @@ def gerar_mensagem_biblica():
     """Gera uma mensagem bíblica personalizada usando a API do Gemini."""
     try:
         # Pega a chave da API das variáveis de ambiente
-        gemini_api_key = os.getenv('AIzaSyDj52rDZApiEFl5lZA3me5tLocuk_6OH18')
+        gemini_api_key = os.getenv('GEMINI_API_KEY')
         genai.configure(api_key=gemini_api_key)
 
         # Define o prompt detalhado para a IA
@@ -75,9 +75,8 @@ if __name__ == "__main__":
     print("Iniciando o agente bíblico diário...")
     
     # Pega as credenciais do Telegram das variáveis de ambiente
-    telegram_bot_token = os.getenv ('7823168327:AAHI-KuwD_aBW0D0uVYULAxqEn0cU_xSzjE')
-
-    telegram_chat_id = os.getenv ('7573837898')
+    telegram_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
+    telegram_chat_id = os.getenv('TELEGRAM_CHAT_ID')
 
     # Gera a mensagem bíblica
     mensagem_gerada = gerar_mensagem_biblica()
