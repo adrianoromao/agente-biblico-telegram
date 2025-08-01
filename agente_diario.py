@@ -14,14 +14,14 @@ def gerar_mensagem_biblica():
         # Baseado nos requisitos do documento original
         prompt = """
         Atue como um conselheiro espiritual e teólogo.
-        [cite_start]Crie uma mensagem bíblica diária, profunda e encorajadora, direcionada especificamente para homens cristãos de 30 a 50 anos. [cite: 6]
+        Crie uma mensagem bíblica diária, profunda e encorajadora, direcionada especificamente para homens cristãos de 30 a 50 anos.
         A mensagem deve ter a seguinte estrutura:
 
         1.  **Tema do Dia:** Um título curto e impactante.
-        2.  [cite_start]**Reflexão Bíblica:** Um texto de aproximadamente 150 palavras, abordando desafios e responsabilidades dessa faixa etária, como liderança familiar, integridade no trabalho, paternidade e propósito de vida. [cite: 32, 33]
-        3.  [cite_start]**Aplicação Prática:** Um ou dois parágrafos curtos com sugestões de como aplicar a reflexão no dia a dia. [cite: 49]
-        4.  [cite_start]**Versículos para Meditar:** Liste de 2 a 3 referências bíblicas (apenas o livro, capítulo e versículos) que sustentam a reflexão. [cite: 49]
-        5.  [cite_start]**Oração do Dia:** Uma oração curta, de 50 a 80 palavras, relacionada ao tema. [cite: 49]
+        2.  **Reflexão Bíblica:** Um texto de aproximadamente 150 palavras, abordando desafios e responsabilidades dessa faixa etária, como liderança familiar, integridade no trabalho, paternidade e propósito de vida.
+        3.  **Aplicação Prática:** Um ou dois parágrafos curtos com sugestões de como aplicar a reflexão no dia a dia.
+        4.  **Versículos para Meditar:** Liste de 2 a 3 referências bíblicas (apenas o livro, capítulo e versículos) que sustentam a reflexão.
+        5.  **Oração do Dia:** Uma oração curta, de 50 a 80 palavras, relacionada ao tema.
 
         Utilize uma linguagem reverente, mas acessível e direta.
         """
@@ -45,21 +45,24 @@ def gerar_mensagem_biblica():
         print(f"Erro ao gerar mensagem: {e}")
         return None
 
-# Função para enviar a mensagem via Telegram
+# Função para enviar a mensagem via Telegram (VERSÃO CORRIGIDA)
 def enviar_mensagem_telegram(mensagem, bot_token, chat_id):
-    """Envia uma mensagem de texto para um chat específico do Telegram."""
+    """Envia uma mensagem de texto para um chat específico do Telegram, limpando caracteres especiais."""
     try:
-        # Monta a URL da API do Telegram
+        # ETAPA DE LIMPEZA: Escapa caracteres que podem quebrar o Markdown do Telegram
+        caracteres_especiais = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
+        mensagem_limpa = mensagem
+        for char in caracteres_especiais:
+            mensagem_limpa = mensagem_limpa.replace(char, f'\\{char}')
+
         url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
         
-        # Parâmetros da requisição: para quem enviar e o que enviar
         payload = {
             'chat_id': chat_id,
-            'text': mensagem,
-            'parse_mode': 'Markdown' # Permite usar negrito, itálico, etc.
+            'text': mensagem_limpa,
+            'parse_mode': 'MarkdownV2' # Usamos a versão 2, que é mais consistente
         }
         
-        # Envia a requisição
         response = requests.post(url, json=payload)
         
         if response.status_code == 200:
