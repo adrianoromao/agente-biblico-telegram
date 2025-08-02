@@ -5,7 +5,7 @@ import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-# ... (a função gerar_mensagem_biblica() continua a mesma) ...
+# A função gerar_mensagem_biblica() continua a mesma
 def gerar_mensagem_biblica():
     """Gera uma mensagem bíblica personalizada com o estilo de Timothy Keller."""
     try:
@@ -33,7 +33,7 @@ def gerar_mensagem_biblica():
         print(f"Erro ao gerar mensagem: {e}")
         return None
 
-# ... (a função enviar_mensagem_telegram() continua a mesma) ...
+# A função enviar_mensagem_telegram() continua a mesma
 def enviar_mensagem_telegram(mensagem, bot_token, chat_id):
     """Envia uma mensagem de texto para um chat específico do Telegram."""
     try:
@@ -51,7 +51,7 @@ def enviar_mensagem_telegram(mensagem, bot_token, chat_id):
     except Exception as e:
         print(f"Erro na função de envio do Telegram: {e}")
 
-# NOVA FUNÇÃO para enviar a mensagem via E-mail com Brevo
+# FUNÇÃO DE ENVIO DE E-MAIL CORRIGIDA
 def enviar_mensagem_email(mensagem, brevo_api_key, to_email, from_email):
     """Envia um e-mail usando a API SMTP do Brevo."""
     smtp_server = "smtp-relay.brevo.com"
@@ -63,29 +63,35 @@ def enviar_mensagem_email(mensagem, brevo_api_key, to_email, from_email):
     message["From"] = from_email
     message["To"] = to_email
 
-    # Converte o texto simples para HTML para manter as quebras de linha
-    html_body = f"""\
+    # --- INÍCIO DA CORREÇÃO ---
+    # 1. Fazemos a substituição ANTES de criar o corpo do e-mail
+    mensagem_html_formatada = mensagem.replace('\n', '<br>')
+
+    # 2. Usamos a nova variável limpa dentro do corpo do e-mail
+    html_body = f"""
     <html>
       <body>
         <p>Aqui está sua reflexão para hoje:</p>
-        <p>{mensagem.replace('\n', '<br>')}</p>
+        <p>{mensagem_html_formatada}</p>
       </body>
     </html>
     """
+    # --- FIM DA CORREÇÃO ---
+
     message.attach(MIMEText(html_body, "html"))
 
     # Cria a conexão segura com o servidor e envia o e-mail
     context = ssl.create_default_context()
     try:
         with smtplib.SMTP(smtp_server, port) as server:
-            server.starttls(context=context)  # Habilita segurança
-            server.login(from_email, brevo_api_key) # Login com seu e-mail e a CHAVE SMTP
+            server.starttls(context=context)
+            server.login(from_email, brevo_api_key)
             server.sendmail(from_email, to_email, message.as_string())
         print("Mensagem enviada com sucesso por E-mail (via Brevo).")
     except Exception as e:
         print(f"Erro ao enviar por E-mail: {e}")
 
-# Bloco principal ATUALIZADO para enviar para Telegram e E-mail
+# O bloco principal continua o mesmo
 if __name__ == "__main__":
     print("Iniciando o agente bíblico diário...")
     mensagem_gerada = gerar_mensagem_biblica()
