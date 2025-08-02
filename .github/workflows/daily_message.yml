@@ -1,44 +1,37 @@
-# Nome da nossa automação
 name: Envio Diário de Mensagem Bíblica
 
-# Gatilho (trigger): quando a automação deve rodar
 on:
   schedule:
-    # A sintaxe cron '0 10 * * *' significa:
-    # 0 minutos, 10 horas, todos os dias do mês, todos os meses, todos os dias da semana.
-    # 10:00 UTC corresponde a 07:00 no horário de Brasília (UTC-3).
     - cron: '0 10 * * *'
   workflow_dispatch:
-    # Isso adiciona um botão para rodar a automação manualmente, ótimo para testes.
 
-# Tarefas a serem executadas
 jobs:
   build:
-    runs-on: ubuntu-latest # Rodará em uma máquina virtual Linux
+    runs-on: ubuntu-latest
 
     steps:
-      # 1. Baixa o código do seu repositório para a máquina virtual
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Configura o ambiente Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11' # Usa a versão 3.11 do Python
+          python-version: '3.11'
 
-      # 3. Instala as bibliotecas que nosso script precisa
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install google-generativeai requests
 
-      # 4. Executa nosso script Python
       - name: Run daily agent script
         run: python agente_diario.py
         env:
-          # Mapeia os segredos que configuramos para as variáveis de ambiente
-          # que o script espera ler
+          # Segredos do Telegram
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          
+          # NOVOS SEGREDOS do WhatsApp
+          WHATSAPP_TOKEN: ${{ secrets.WHATSAPP_TOKEN }}
+          WHATSAPP_PHONE_ID: ${{ secrets.WHATSAPP_PHONE_ID }}
+          WHATSAPP_RECIPIENT_NUMBER: ${{ secrets.WHATSAPP_RECIPIENT_NUMBER }}
