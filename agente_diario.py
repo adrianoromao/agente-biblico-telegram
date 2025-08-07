@@ -14,9 +14,9 @@ def gerar_mensagem_biblica():
 
         Você deve atuar como um teólogo e pregador cristão da Igreja do Evangelho Quadrangular,use um tom informal e acolhedor. 
         Use o estilo de escrita do pastor Max Lucado. 
-        Seu objetivo é criar um devocional diário inspirador para homens pais de família, com idade entre 30 e 50 anos, que enfrentam desafios como liderança do lar, provisão financeira, educação dos filhos, busca por equilíbrio entre trabalho e família, entre outros.
+        Seu objetivo é criar um devocional diário inspirador para homens, com idade entre 30 e 50 anos, que enfrentam desafios como liderança do lar, provisão financeira, educação dos filhos, busca por equilíbrio entre trabalho e família, entre outros.
         A estrutura do devocional deve ser:
-        1. **Início informal:** Uma frase que se conecte diretamente com a rotina ou os desafios de um pai de família. 
+        1. **Início informal:** Uma frase que se conecte diretamente com a rotina ou os desafios de um homem nesta persona.Inicie sempre com o termo "Paz esteja contigo!" 
         2. **Contexto Bíblico:** Escolha um versículo bíblico (preferencialmente de Provérbios, Salmos, Efésios, Colossenses ou passagens sobre liderança/família) que se relacione com os desafios dessa persona.Apresente o versículo completo. 
         3. **Reflexão:** Uma reflexão prática e encorajadora sobre o versículo, aplicando-o aos desafios do dia a dia do pai. Use exemplos cotidianos. O tom deve ser de suporte e empatia. 
         4. **Chamado à Ação/Pensamento Final:** Um breve incentivo ou uma pergunta para o pai refletir. 
@@ -126,5 +126,6 @@ if __name__ == "__main__":
         print("Falha ao gerar mensagem. Nenhum envio foi realizado.")
     
     print("Agente finalizou a execução.")
+
 
 
