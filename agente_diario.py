@@ -30,7 +30,7 @@ def gerar_mensagem_biblica():
         generation_config = {"temperature": 0.75, "top_p": 1, "top_k": 1, "max_output_tokens": 8192}
         model = genai.GenerativeModel(model_name="gemini-1.5-flash", generation_config=generation_config)
         response = model.generate_content(prompt)
-        print("Mensagem gerada com sucesso pelo Gemini (Estilo Keller).")
+        print("Mensagem gerada com sucesso pelo Gemini (Estilo Lucado).")
         return response.text
     except Exception as e:
         print(f"Erro ao gerar mensagem: {e}")
@@ -103,5 +103,6 @@ if __name__ == "__main__":
     else:
         print("Falha ao gerar mensagem. Nenhum envio foi realizado.")
     print("Agente finalizou a execução.")
+
 
 
