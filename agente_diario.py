@@ -1,9 +1,9 @@
 import os
 import google.generativeai as genai
 import requests
-import smtplib, ssl
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+# --- NOVAS BIBLIOTECAS IMPORTADAS ---
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
 
 # A função gerar_mensagem_biblica() continua a mesma
 def gerar_mensagem_biblica():
@@ -51,38 +51,31 @@ def enviar_mensagem_telegram(mensagem, bot_token, chat_id):
     except Exception as e:
         print(f"Erro na função de envio do Telegram: {e}")
 
-# FUNÇÃO DE E-MAIL COM A LÓGICA DE LOGIN CORRIGIDA
-def enviar_mensagem_email(mensagem, brevo_api_key, to_email, from_email, brevo_login_email):
-    """Envia um e-mail usando a API SMTP do Brevo com o login correto."""
-    smtp_server = "smtp-relay.brevo.com"
-    port = 587
+# --- FUNÇÃO DE E-MAIL TOTALMENTE REESCRITA USANDO A BIBLIOTECA OFICIAL ---
+def enviar_mensagem_email(mensagem, api_key, to_email, from_email):
+    """Envia um e-mail transacional usando a API v3 oficial do Brevo."""
+    # Configura a chave de API
+    configuration = sib_api_v3_sdk.Configuration()
+    configuration.api_key['api-key'] = api_key
     
-    message = MIMEMultipart("alternative")
-    message["Subject"] = "Sua Reflexão Bíblica Diária"
-    message["From"] = from_email # O remetente que aparece para o usuário
-    message["To"] = to_email
-
-    mensagem_html_formatada = mensagem.replace('\n', '<br>')
-    html_body = f"""
-    <html><body>
-        <p>Aqui está sua reflexão para hoje:</p>
-        <p>{mensagem_html_formatada}</p>
-    </body></html>
-    """
-    message.attach(MIMEText(html_body, "html"))
-
-    context = ssl.create_default_context()
+    # Cria uma instância da API
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+    
+    # Define os detalhes do e-mail
+    subject = "Sua Reflexão Bíblica Diária"
+    html_content = f"<html><body>{mensagem.replace('\n', '<br>')}</body></html>"
+    sender = {"name": "Agente Bíblico", "email": from_email}
+    to = [{"email": to_email}]
+    
+    # Monta o objeto do e-mail
+    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(to=to, html_content=html_content, sender=sender, subject=subject)
+    
+    # Envia o e-mail
     try:
-        with smtplib.SMTP(smtp_server, port) as server:
-            server.starttls(context=context)
-            # --- INÍCIO DA CORREÇÃO PRINCIPAL ---
-            # Usamos o login especial do Brevo e a Chave SMTP como senha
-            server.login(brevo_login, brevo_api_key)
-            # --- FIM DA CORREÇÃO PRINCIPAL ---
-            server.sendmail(from_email, to_email, message.as_string())
-        print("Mensagem enviada com sucesso por E-mail (via Brevo).")
-    except Exception as e:
-        print(f"Erro ao enviar por E-mail: {e}")
+        api_response = api_instance.send_transac_email(send_smtp_email)
+        print("E-mail enviado com sucesso via API Brevo (v3)!")
+    except ApiException as e:
+        print(f"Erro ao enviar e-mail via API Brevo (v3): {e}")
 
 # BLOCO PRINCIPAL ATUALIZADO
 if __name__ == "__main__":
@@ -95,16 +88,14 @@ if __name__ == "__main__":
         if telegram_bot_token and telegram_chat_id:
             enviar_mensagem_telegram(mensagem_gerada, telegram_bot_token, telegram_chat_id)
         
-        # Envio para E-mail via Brevo (com o novo segredo)
+        # Envio para E-mail via API v3 do Brevo
         brevo_api_key = os.getenv('BREVO_API_KEY')
         to_email = os.getenv('TO_EMAIL')
         from_email = os.getenv('FROM_EMAIL')
-        brevo_login_email = os.getenv('BREVO_LOGIN_EMAIL') # Pega o novo segredo
-        if all([brevo_api_key, to_email, from_email, brevo_login_email]):
-            enviar_mensagem_email(mensagem_gerada, brevo_api_key, to_email, from_email, brevo_login_email)
+        if all([brevo_api_key, to_email, from_email]):
+            enviar_mensagem_email(mensagem_gerada, brevo_api_key, to_email, from_email)
         else:
-            print("Credenciais do Brevo incompletas. Envio de e-mail pulado.")
+            print("Credenciais do Brevo (API v3) incompletas. Envio de e-mail pulado.")
     else:
         print("Falha ao gerar mensagem. Nenhum envio foi realizado.")
     print("Agente finalizou a execução.")
-
