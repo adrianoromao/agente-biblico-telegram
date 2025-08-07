@@ -52,7 +52,7 @@ def enviar_mensagem_telegram(mensagem, bot_token, chat_id):
         print(f"Erro na função de envio do Telegram: {e}")
 
 # FUNÇÃO DE E-MAIL COM A LÓGICA DE LOGIN CORRIGIDA
-def enviar_mensagem_email(mensagem, brevo_api_key, to_email, from_email, brevo_login):
+def enviar_mensagem_email(mensagem, brevo_api_key, to_email, from_email, brevo_login_email):
     """Envia um e-mail usando a API SMTP do Brevo com o login correto."""
     smtp_server = "smtp-relay.brevo.com"
     port = 587
@@ -107,3 +107,4 @@ if __name__ == "__main__":
     else:
         print("Falha ao gerar mensagem. Nenhum envio foi realizado.")
     print("Agente finalizou a execução.")
+
