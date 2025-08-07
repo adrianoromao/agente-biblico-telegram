@@ -1,7 +1,7 @@
 import os
 import google.generativeai as genai
 import requests
-# --- NOVAS BIBLIOTECAS IMPORTADAS ---
+# Bibliotecas da nova abordagem Brevo
 import sib_api_v3_sdk
 from sib_api_v3_sdk.rest import ApiException
 
@@ -51,33 +51,34 @@ def enviar_mensagem_telegram(mensagem, bot_token, chat_id):
     except Exception as e:
         print(f"Erro na função de envio do Telegram: {e}")
 
-# --- FUNÇÃO DE E-MAIL TOTALMENTE REESCRITA USANDO A BIBLIOTECA OFICIAL ---
+# FUNÇÃO DE E-MAIL COM A CORREÇÃO DE SINTAXE
 def enviar_mensagem_email(mensagem, api_key, to_email, from_email):
     """Envia um e-mail transacional usando a API v3 oficial do Brevo."""
-    # Configura a chave de API
     configuration = sib_api_v3_sdk.Configuration()
     configuration.api_key['api-key'] = api_key
     
-    # Cria uma instância da API
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
     
-    # Define os detalhes do e-mail
     subject = "Sua Reflexão Bíblica Diária"
-    html_content = f"<html><body>{mensagem.replace('\n', '<br>')}</body></html>"
     sender = {"name": "Agente Bíblico", "email": from_email}
     to = [{"email": to_email}]
+
+    # --- INÍCIO DA CORREÇÃO FINAL ---
+    # 1. Primeiro, preparamos o HTML, fazendo a substituição das quebras de linha.
+    mensagem_html = mensagem.replace('\n', '<br>')
+    # 2. Depois, usamos a variável já pronta no conteúdo do e-mail, sem causar o erro de sintaxe.
+    html_content = f"<html><body>{mensagem_html}</body></html>"
+    # --- FIM DA CORREÇÃO FINAL ---
     
-    # Monta o objeto do e-mail
     send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(to=to, html_content=html_content, sender=sender, subject=subject)
     
-    # Envia o e-mail
     try:
         api_response = api_instance.send_transac_email(send_smtp_email)
         print("E-mail enviado com sucesso via API Brevo (v3)!")
     except ApiException as e:
         print(f"Erro ao enviar e-mail via API Brevo (v3): {e}")
 
-# BLOCO PRINCIPAL ATUALIZADO
+# O bloco principal continua o mesmo da versão anterior
 if __name__ == "__main__":
     print("Iniciando o agente bíblico diário...")
     mensagem_gerada = gerar_mensagem_biblica()
