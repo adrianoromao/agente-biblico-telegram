@@ -6,7 +6,7 @@ from sib_api_v3_sdk.rest import ApiException
 
 # A função gerar_mensagem_biblica() continua a mesma
 def gerar_mensagem_biblica():
-    """Gera uma mensagem bíblica personalizada com o estilo de Timothy Keller."""
+    """Gera uma mensagem bíblica personalizada com o estilo de Max Lucado."""
     try:
         gemini_api_key = os.getenv('GEMINI_API_KEY')
         genai.configure(api_key=gemini_api_key)
@@ -126,4 +126,5 @@ if __name__ == "__main__":
         print("Falha ao gerar mensagem. Nenhum envio foi realizado.")
     
     print("Agente finalizou a execução.")
+
 
