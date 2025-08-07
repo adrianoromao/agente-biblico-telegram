@@ -18,15 +18,23 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # Adicionada a biblioteca oficial da Brevo (sib-api-v3-sdk)
           pip install google-generativeai requests sib-api-v3-sdk
       - name: Run daily agent script
         run: python agente_diario.py
         env:
+          # Segredos do Gemini
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          
+          # Segredos do Telegram
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          # Usaremos apenas a chave principal, o e-mail de destino e o de remetente
+          
+          # Segredos do E-mail (Brevo)
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
           TO_EMAIL: ${{ secrets.TO_EMAIL }}
           FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+          
+          # Segredos do WhatsApp
+          WHATSAPP_TOKEN: ${{ secrets.WHATSAPP_TOKEN }}
+          WHATSAPP_PHONE_ID: ${{ secrets.WHATSAPP_PHONE_ID }}
+          WHATSAPP_RECIPIENT_NUMBER: ${{ secrets.WHATSAPP_RECIPIENT_NUMBER }}
