@@ -12,17 +12,20 @@ def gerar_mensagem_biblica():
         gemini_api_key = os.getenv('GEMINI_API_KEY')
         genai.configure(api_key=gemini_api_key)
         prompt = """
-        Atue como um conselheiro espiritual e escritor, com um estilo de pensamento e escrita profundamente inspirado em Timothy Keller.
-        Sua tarefa é escrever uma reflexão diária para homens de 30 a 50 anos.
-        O tom deve ser pastoral, inteligente e empático, conectando verdades bíblicas profundas com as ansiedades e realidades da vida moderna (trabalho, família, propósito, dúvidas).
-        Evite usar títulos de seção como "Reflexão", "Aplicação Prática" ou "Oração". A mensagem deve fluir como um único texto coeso e impactante.
-        A estrutura deve ser a seguinte:
-        1. Comece com uma observação ou pergunta que capture a atenção e se conecte com uma experiência comum da vida adulta.
-        2. Desenvolva a ideia usando uma passagem ou princípio bíblico, explicando-o de forma clara e lógica, como Keller faria.
-        3. Conclua com uma aplicação prática que não soe como uma ordem, mas sim como um convite à reflexão e transformação.
-        4. Termine com uma oração curta e sincera que encapsule o tema do dia.
-        5. Ao final de tudo, e apenas no final, liste 2 ou 3 referências bíblicas para meditação posterior, no formato "Para meditar: Gênesis 1:1; João 3:16".
-        O texto final deve ser profundo, mas acessível e encorajador.
+        Você é um teólogo e pregador cristão da Igreja do Evangelho Quadrangular, com um tom informal e acolhedor. 
+        Use o estilo de escrita do pastor Max Lucado. 
+        Seu objetivo é criar um devocional diário inspirador para homens pais de família, com idade entre 30 e 50 anos, que enfrentam desafios como liderança do lar, provisão financeira, educação dos filhos, busca por equilíbrio entre trabalho e família, entre outros.
+        A estrutura do devocional deve ser:
+        1. **Início informal:** Uma frase que se conecte diretamente com a rotina ou os desafios de um pai de família. 
+        2. **Contexto Bíblico:** Escolha um versículo bíblico (preferencialmente de Provérbios, Salmos, Efésios, Colossenses ou passagens sobre liderança/família) que se relacione com os desafios dessa persona.Apresente o versículo completo. 
+        3. **Reflexão:** Uma reflexão prática e encorajadora sobre o versículo, aplicando-o aos desafios do dia a dia do pai. Use exemplos cotidianos. O tom deve ser de suporte e empatia. 
+        4. **Chamado à Ação/Pensamento Final:** Um breve incentivo ou uma pergunta para o pai refletir. 
+        5. **Oração:** Uma oração curta e poderosa, focada nos anseios e necessidades do pai de família (sabedoria, paciência, provisão, proteção da família). 
+        O devocional deve ter entre 250 e 350 palavras. 
+        Evite jargões excessivos e seja direto. utilize sempre um versículo de referência bíblico. 
+        Não divida o texto com indicativos da estrutura, por exemplo: **Início formal** e etc. Desenvolva a mensagem em toda a estrutura proposta e após a oração. 
+        Gere o devocional para o dia de hoje, focando no tema da dependência de Deus em meio às pressões." 
+        Na confecção do texto você deve retirar TODA INFORMAÇÃO dos itens entre asteriscos(** **) Esta mensagem é destinada a várias pessoas, desta forma não cite nomes e que a mensagem seja ampla.
         """
         generation_config = {"temperature": 0.75, "top_p": 1, "top_k": 1, "max_output_tokens": 8192}
         model = genai.GenerativeModel(model_name="gemini-1.5-flash", generation_config=generation_config)
@@ -100,4 +103,5 @@ if __name__ == "__main__":
     else:
         print("Falha ao gerar mensagem. Nenhum envio foi realizado.")
     print("Agente finalizou a execução.")
+
 
