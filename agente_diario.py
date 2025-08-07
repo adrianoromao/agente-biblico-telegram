@@ -51,47 +51,40 @@ def enviar_mensagem_telegram(mensagem, bot_token, chat_id):
     except Exception as e:
         print(f"Erro na função de envio do Telegram: {e}")
 
-# FUNÇÃO DE ENVIO DE E-MAIL CORRIGIDA
-def enviar_mensagem_email(mensagem, brevo_api_key, to_email, from_email):
-    """Envia um e-mail usando a API SMTP do Brevo."""
+# FUNÇÃO DE E-MAIL COM A LÓGICA DE LOGIN CORRIGIDA
+def enviar_mensagem_email(mensagem, brevo_api_key, to_email, from_email, brevo_login):
+    """Envia um e-mail usando a API SMTP do Brevo com o login correto."""
     smtp_server = "smtp-relay.brevo.com"
     port = 587
     
-    # Prepara o corpo do e-mail
     message = MIMEMultipart("alternative")
     message["Subject"] = "Sua Reflexão Bíblica Diária"
-    message["From"] = from_email
+    message["From"] = from_email # O remetente que aparece para o usuário
     message["To"] = to_email
 
-    # --- INÍCIO DA CORREÇÃO ---
-    # 1. Fazemos a substituição ANTES de criar o corpo do e-mail
     mensagem_html_formatada = mensagem.replace('\n', '<br>')
-
-    # 2. Usamos a nova variável limpa dentro do corpo do e-mail
     html_body = f"""
-    <html>
-      <body>
+    <html><body>
         <p>Aqui está sua reflexão para hoje:</p>
         <p>{mensagem_html_formatada}</p>
-      </body>
-    </html>
+    </body></html>
     """
-    # --- FIM DA CORREÇÃO ---
-
     message.attach(MIMEText(html_body, "html"))
 
-    # Cria a conexão segura com o servidor e envia o e-mail
     context = ssl.create_default_context()
     try:
         with smtplib.SMTP(smtp_server, port) as server:
             server.starttls(context=context)
-            server.login(from_email, brevo_api_key)
+            # --- INÍCIO DA CORREÇÃO PRINCIPAL ---
+            # Usamos o login especial do Brevo e a Chave SMTP como senha
+            server.login(brevo_login, brevo_api_key)
+            # --- FIM DA CORREÇÃO PRINCIPAL ---
             server.sendmail(from_email, to_email, message.as_string())
         print("Mensagem enviada com sucesso por E-mail (via Brevo).")
     except Exception as e:
         print(f"Erro ao enviar por E-mail: {e}")
 
-# O bloco principal continua o mesmo
+# BLOCO PRINCIPAL ATUALIZADO
 if __name__ == "__main__":
     print("Iniciando o agente bíblico diário...")
     mensagem_gerada = gerar_mensagem_biblica()
@@ -102,12 +95,15 @@ if __name__ == "__main__":
         if telegram_bot_token and telegram_chat_id:
             enviar_mensagem_telegram(mensagem_gerada, telegram_bot_token, telegram_chat_id)
         
-        # Envio para E-mail via Brevo
+        # Envio para E-mail via Brevo (com o novo segredo)
         brevo_api_key = os.getenv('BREVO_API_KEY')
         to_email = os.getenv('TO_EMAIL')
         from_email = os.getenv('FROM_EMAIL')
-        if brevo_api_key and to_email and from_email:
-            enviar_mensagem_email(mensagem_gerada, brevo_api_key, to_email, from_email)
+        brevo_login_email = os.getenv('BREVO_LOGIN_EMAIL') # Pega o novo segredo
+        if all([brevo_api_key, to_email, from_email, brevo_login_email]):
+            enviar_mensagem_email(mensagem_gerada, brevo_api_key, to_email, from_email, brevo_login_email)
+        else:
+            print("Credenciais do Brevo incompletas. Envio de e-mail pulado.")
     else:
         print("Falha ao gerar mensagem. Nenhum envio foi realizado.")
     print("Agente finalizou a execução.")
